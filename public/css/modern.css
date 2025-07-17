@@ -1,0 +1,223 @@
+body, .right_col {
+    font-family: 'Inter', sans-serif;
+    color: #1f2937; /* gris oscuro moderno */
+  }
+  
+  .nav_title {
+    background: #1dacd8 !important; /* azul fuerte */
+  }
+  
+  .site_title i, .site_title span {
+    color: white !important;
+  }
+  
+  .left_col, .nav-md .container.body .right_col {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  
+  .profile_info h2 {
+    font-weight: 600;
+    color: rgba(80, 185, 204, 0.8); /* azul moderno */
+  }
+  
+  a, .navbar-nav .nav-link, .sidebar-footer a {
+    transition: all 0.2s ease-in-out;
+  }
+  a:hover {
+    color: rgb(141, 220, 226) !important;
+  }
+  
+  footer {
+    background-color: #f1f5f9;
+    padding: 20px;
+    border-top: 1px solid #d1d5db;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .card, .x_panel {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  /* Botones */
+  .btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+  }
+  .btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+  /* Cambiar color de fondo del menú */
+.left_col {
+    background: #5b8392 !important; /* azul oscuro */
+  }
+  
+  /* Cambiar color de los títulos del menú */
+  .sidebar-menu .menu_section h3 {
+    color: #ffffff !important;
+  }
+  
+  /* Cambiar el color de los íconos del menú */
+  .left_col .fa {
+    color: white !important;
+  }
+  
+  /* Cambiar color de los enlaces */
+  .nav.side-menu > li > a {
+    color: white !important;
+  }
+  .nav.side-menu > li > a:hover {
+    background: #43c0d6 !important;
+    color: #ffffff !important;
+  }
+  
+  /* Ítems activos */
+  .nav.side-menu > li.active > a {
+    background: #43c0d6 !important;
+    color: #ffffff !important;
+  }
+  @media (prefers-color-scheme: dark) {
+    body, .right_col {
+      color: #f3f4f6;
+    }
+  
+    .nav_title {
+      background: #2a170f !important;
+    }
+  
+    .left_col {
+      background: #1e293b;
+    }
+  
+    .site_title i, .site_title span {
+      color: #f9fafb !important;
+    }
+  
+    footer {
+      background-color: #0f172a;
+      color: #cbd5e1;
+    }
+  }
+
+  /* Modo claro - Top nav */
+.top_nav {
+    background-color: #f1f5f9 !important; /* gris muy claro */
+    border-bottom: 1px solid #d1d5db !important;
+  }
+  
+  .nav_menu .navbar-right > li > a,
+  .nav_menu .user-profile {
+    color: #1f2937 !important;
+  }
+  
+  /* Modo oscuro */
+  @media (prefers-color-scheme: dark) {
+    .top_nav {
+      background-color: #0f172a !important; /* gris-azulado oscuro */
+      border-bottom: 1px solid #334155 !important;
+    }
+  
+    .nav_menu .navbar-right > li > a,
+    .nav_menu .user-profile {
+      color: #e2e8f0 !important;
+    }
+  }
+  /* Botones base */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+  }
+  
+  /* Botones primarios (modo claro y oscuro) */
+  .btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1e40af;
+    border-color: #1e40af;
+  }
+  
+  /* Modo oscuro */
+  @media (prefers-color-scheme: dark) {
+    .btn-primary {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+      color: #f9fafb;
+    }
+  
+    .btn-primary:hover {
+      background-color: #2563eb;
+      border-color: #2563eb;
+    }
+  }
+  /* Tablas modernas */
+table.dataTable {
+    border-collapse: collapse !important;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #ffffff;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    table.dataTable {
+      background-color: #1f2937;
+      color: #f1f5f9;
+    }
+  
+    table.dataTable th,
+    table.dataTable td {
+      border-color: #334155 !important;
+    }
+  }
+
+  /* Inputs y selects base */
+input.form-control,
+select.form-control,
+textarea.form-control {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  padding: 0.6rem 1rem;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  outline: none;
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  input.form-control,
+  select.form-control,
+  textarea.form-control {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    border-color: #334155;
+  }
+
+  input.form-control:focus,
+  select.form-control:focus,
+  textarea.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+  }
+}
+
+/* Labels */
+label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+  
