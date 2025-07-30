@@ -9,6 +9,9 @@ use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\TipoDocumentoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\ParkingSpaceController;
+use App\Http\Controllers\VehicleEntryController;
 
 Route::post('/notificaciones/leidas', function () {
     auth()->user()->unreadNotifications->markAsRead();
@@ -73,5 +76,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/logs/exportar/pdf', [DocumentoController::class, 'exportarPDF'])->name('logs.exportar.pdf');
     Route::get('/log', [DocumentoController::class, 'exportarLog'])->name('documentos.log.index');
 });
+// Agrupar todo bajo middleware de autenticación
+Route::middleware(['auth'])->group(function () {
+    // Perfil de usuario
 
+
+    // Ruta principal (panel de parqueadero)
+    Route::get('/', [VehicleEntryController::class, 'index'])->name('parking.dashboard');
+
+    // Rutas para vehículos
+    Route::resource('vehicles', VehicleController::class);
+
+    // Rutas para espacios de parqueo
+    Route::resource('parking-spaces', ParkingSpaceController::class);
+
+    // Rutas para entradas de vehículos
+    Route::prefix('parking')->name('parking.')->group(function () {
+        Route::get('/', [VehicleEntryController::class, 'index'])->name('dashboard');
+        Route::get('/history', [VehicleEntryController::class, 'history'])->name('history');
+        Route::post('/entrada', [VehicleEntryController::class, 'registerEntry'])->name('entry');
+        Route::post('/salida', [VehicleEntryController::class, 'registerExit'])->name('exit');
+    });
+});
 require __DIR__ . '/auth.php';
