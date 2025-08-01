@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\VehicleEntryController;
+use App\Http\Controllers\TipoVehiculoWebController;
 
 Route::post('/notificaciones/leidas', function () {
     auth()->user()->unreadNotifications->markAsRead();
@@ -97,5 +98,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/entrada', [VehicleEntryController::class, 'registerEntry'])->name('entry');
         Route::post('/salida', [VehicleEntryController::class, 'registerExit'])->name('exit');
     });
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('tipo_vehiculos', TipoVehiculoWebController::class);
+});
+
 });
 require __DIR__ . '/auth.php';

@@ -7,7 +7,8 @@
 
     </ul>
   </li>
-  <li><a><i class="fa fa-edit"></i> Gestion Documentos <span class="fa fa-chevron-down"></span></a>
+  <li>
+    <a><i class="fa fa-edit"></i> Gestion Documentos <span class="fa fa-chevron-down"></span></a>
     <ul class="nav child_menu">
       <li><a href="{{ route('documentos.index') }}">Documentos</a></li>
       <li><a href="{{ route('dashboard') }}">Estadísticas</a></li>
@@ -15,6 +16,18 @@
        <li><a href="{{ route('tipo_documentos.index') }}">Tipo De Documentos</a></li>
     </ul>
   </li>
+
+<li>
+  <a href="{{ route('tipo_vehiculos.index') }}"><i class="fa fa-edit"></i> Gestión Vehículos <span class="fa fa-chevron-down"></span></a>
+  <!-- <ul class="nav child_menu">
+    <li><a href="{{ route('tipo_vehiculos.index') }}">Tipos de Vehículo</a></li>
+  </ul> -->
+</li>
+
+
+
+
+
   {{-- <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="general_elements.html">General Elements</a></li>
