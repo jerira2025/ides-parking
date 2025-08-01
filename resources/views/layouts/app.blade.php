@@ -1,381 +1,489 @@
+{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-  <meta charset="utf-12">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/ico" />
-
-  <title>Gentelella Alela!</title>
-
-  <!-- Bootstrap -->
-  <link href="{{ asset('vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link href="{{ asset('vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
-
-  <!-- NProgress -->
-  <link href="{{ asset('vendors/nprogress/nprogress.css') }}" rel="stylesheet">
-
-  <!-- iCheck -->
-  <link href="{{ asset('vendors/iCheck/skins/flat/green.css') }}" rel="stylesheet">
-
-  <!-- Bootstrap Progressbar -->
-  <link href="{{ asset('vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
-
-  <!-- JQVMap -->
-  <link href="{{ asset('vendors/jqvmap/dist/jqvmap.min.css') }}" rel="stylesheet" />
-
-  <!-- Daterangepicker -->
-  <link href="{{ asset('vendors/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
-
-  <!-- Custom Theme Style -->
-  <link href="{{ asset('build/css/custom.min.css') }}" rel="stylesheet">
-
-  <link href="{{asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet">
-
-
-
-  <!-- Datatables -->
-  <link href="{{ asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css') }}" rel="stylesheet">
-
-  <!-- SweetAlert2 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-</head>
-
-<body class="nav-md">
-  <div class="container body">
-    <div class="main_container">
-      <div class="col-md-3 left_col">
-        <div class="left_col scroll-view">
-          <div class="navbar nav_title" style="border: 0;">
-            <a href="index.html" class="site_title"><i class="fa fa-tint"></i> <span>Parqueadero!</span></a>
-          </div>
-
-          <div class="clearfix"></div>
-
-          <!-- menu profile quick info -->
-          <div class="profile clearfix">
-            <div class="profile_pic">
-              <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario"
-                class="img-circle profile_img" />
-            </div>
-            <div class="profile_info">
-              <span>Bienvenido</span>
-              <h2>{{ Auth::user()->name}}</h2>
-            </div>
-          </div>
-
-          <!-- /menu profile quick info -->
-
-          <br />
-
-          <!-- sidebar menu -->
-          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div class="menu_section">
-              <h3>General</h3>
-              @include('layouts.navigation') <!-- Aquí se carga la barra de navegación -->
-            </div>
-
-          </div>
-          <!-- /sidebar menu -->
-
-          <!-- /menu footer buttons -->
-          <div class="sidebar-footer hidden-small">
-            <a data-toggle="tooltip" data-placement="top" title="Settings">
-              <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-            </a>
-            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-              <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-            </a>
-            <a data-toggle="tooltip" data-placement="top" title="Lock">
-              <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-            </a>
-            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-              <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-            </a>
-          </div>
-          <!-- /menu footer buttons -->
-        </div>
-      </div>
-
-      <!-- top navigation -->
-      <div class="top_nav">
-        <div class="nav_menu">
-          <div class="nav toggle">
-            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-          </div>
-          <nav class="nav navbar-nav">
-            <ul class=" navbar-right">
-              @auth
-              <li class="nav-item dropdown">
-                <a class="dropdown-toggle info-number" href="#" data-toggle="dropdown" aria-expanded="false">
-                  <i class="fa fa-bell-o"></i>
-                  @php $count = auth()->user()->unreadNotifications->count(); @endphp
-                  @if($count > 0)
-                  <span class="badge bg-red">{{ $count }}</span>
-                  @endif
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right list-unstyled msg_list" role="menu">
-                  @forelse(auth()->user()->unreadNotifications as $notification)
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
-                      </span>
-                      <span>
-                        <span>{{ Auth::user()->name }}</span>
-                        <span class="time">{{ $notification->created_at->diffForHumans() }}</span>
-                      </span>
-                      <span class="message">
-                        {{ $notification->data['mensaje'] ?? 'Nueva notificación' }}
-                      </span>
-                    </a>
-                  </li>
-                  @empty
-                  <li class="nav-item text-center text-muted py-2">Sin notificaciones</li>
-                  @endforelse
-                  <li class="nav-item text-center">
-                    <form method="POST" action="{{ route('notificaciones.leer') }}">
-                      @csrf
-                      <button class="btn btn-sm btn-primary w-100">Marcar como leídas</button>
-                    </form>
-                  </li>
-                </ul>
-              </li>
-              @endauth
-              <li class="nav-item dropdown open" style="padding-left: 15px;">
-                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown"
-                  data-toggle="dropdown" aria-expanded="false">
-                  <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario">{{ Auth::user()->name }}
-                </a>
-                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="javascript:;"> Profile</a>
-                  <a class="dropdown-item" href="javascript:;">
-                    <span class="badge bg-red pull-right">50%</span>
-                    <span>Settings</span>
-                  </a>
-                  <a class="dropdown-item" href="javascript:;">Help</a>
-                  <a class="dropdown-item" href="#"
-                    onclick="event.preventDefault();  document.getElementById('logout-form').submit();"><i
-                      class="fa fa-sign-out pull-right"></i><span>Salir</span></a>
-
-                </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                  @csrf
-                </form>
-              </li>
-
-              {{--<li role="presentation" class="nav-item dropdown open">
-                <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown"
-                  aria-expanded="false">
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="badge bg-green">6</span>
-                </a>
-                <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
-                      </span>
-                      <span>
-                        <span>{{ Auth::user()->name}}</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
-                      </span>
-                      <span>
-                        <span>{{ Auth::user()->name}}</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
-                      </span>
-                      <span>
-                        <span>{{ Auth::user()->name}}</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
-                      </span>
-                      <span>
-                        <span>{{ Auth::user()->name}}</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <div class="text-center">
-                      <a class="dropdown-item">
-                        <strong>See All Alerts</strong>
-                        <i class="fa fa-angle-right"></i>
-                      </a>
-                    </div>
-                  </li>
-                </ul>
-              </li>--}}
-            </ul>
-          </nav>
-        </div>
-      </div>
-
-      <!-- /top navigation -->
-
-      <!-- page content -->
-      <div class="right_col" role="main">
-        <!-- top tiles -->
-        <div class="row" style="display: inline-block;">
-          @yield('content')
-        </div>
-      </div>
-      <!-- /page content -->
-
-      <!-- footer content -->
-      <footer>
-        <div class="pull-right">
-          Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-        </div>
-        <div class="clearfix"></div>
-      </footer>
-      <!-- /footer content -->
-    </div>
-  </div>
-  <!-- jQuery -->
-  <script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
-
-  <!-- Bootstrap -->
-  <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-
-  <!-- FastClick -->
-  <script src="{{ asset('vendors/fastclick/lib/fastclick.js') }}"></script>
-
-  <!-- NProgress -->
-  <script src="{{ asset('vendors/nprogress/nprogress.js') }}"></script>
-
-  <!-- Chart.js -->
-  <script src="{{ asset('vendors/Chart.js/dist/Chart.min.js') }}"></script>
-
-  <!-- gauge.js (si lo usas) -->
-  <script src="{{ asset('vendors/gauge.js/dist/gauge.min.js') }}"></script>
-
-  <!-- Bootstrap Progressbar -->
-  <script src="{{ asset('vendors/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
-
-  <!-- iCheck -->
-  <script src="{{ asset('vendors/iCheck/icheck.min.js') }}"></script>
-
-  <!-- Skycons (íconos animados de clima, si los usas) -->
-  <script src="{{ asset('vendors/skycons/skycons.js') }}"></script>
-
-  <!-- Flot Charts (solo si los necesitas) -->
-  <script src="{{ asset('vendors/Flot/jquery.flot.js') }}"></script>
-  <script src="{{ asset('vendors/Flot/jquery.flot.pie.js') }}"></script>
-  <script src="{{ asset('vendors/Flot/jquery.flot.time.js') }}"></script>
-  <script src="{{ asset('vendors/Flot/jquery.flot.stack.js') }}"></script>
-  <script src="{{ asset('vendors/Flot/jquery.flot.resize.js') }}"></script>
-  <script src="{{ asset('vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
-  <script src="{{ asset('vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
-  <script src="{{ asset('vendors/flot.curvedlines/curvedLines.js') }}"></script>
-
-
-  <!-- Flot Plugins -->
-  <script src="{{ asset('vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
-  <script src="{{ asset('vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
-  <script src="{{ asset('vendors/flot.curvedlines/curvedLines.js') }}"></script>
-
-  <!-- DateJS -->
-  <script src="{{ asset('vendors/DateJS/build/date.js') }}"></script>
-
-  <!-- JQVMap -->
-  <script src="{{ asset('vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
-  <script src="{{ asset('vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
-  <script src="{{ asset('vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
-
-  <!-- Bootstrap Daterangepicker -->
-  <script src="{{ asset('vendors/moment/min/moment.min.js') }}"></script>
-  <script src="{{ asset('vendors/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
-
-  <!-- Custom Theme Scripts -->
-  <script src="{{ asset('build/js/custom.min.js') }}"></script>
-
-  <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
-  <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script>
-  <script src="{{asset('vendors/jszip/dist/jszip.min.js')}}"></script>
-  <script src="{{asset('vendors/pdfmake/build/pdfmake.min.js')}}"></script>
-  <script src="{{asset('vendors/pdfmake/build/vfs_fonts.js')}}"></script>
-
-
-  <script src="{{asset('vendors/switchery/dist/switchery.min.js')}}"></script>
-  <!-- sweet alert -->
-
-  <script src="{{asset('vendors/sweetalert/sweetalert.min.js')}}"></script>
-
-
-  <!-- SweetAlert2 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-  <!-- SweetAlert2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#datatable-buttons').DataTable({
-        responsive: true,
-        language: {
-          url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Sistema de Parqueadero')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.471;
+            color: #73879C;
+            background-color: #2A3F54;
         }
-      });
-    });
-  </script>
 
+        .container-body {
+            background: #EDEDED;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
 
+        /* Sidebar Styles */
+        .left_col {
+            background: #2A3F54;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 230px;
+            z-index: 9999;
+            padding: 0;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 16px 24px 0px;
+        }
 
+        .sidebar-header {
+            background: #34495E;
+            padding: 20px;
+            text-align: center;
+            color: #ECF0F1;
+        }
+
+        .sidebar-header h3 {
+            margin: 10px 0 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .sidebar-header p {
+            margin: 0;
+            font-size: 11px;
+            font-weight: 300;
+        }
+
+        /* Navigation Styles */
+        .nav.side-menu {
+            margin-bottom: 0;
+            margin-top: 20px;
+        }
+
+        .nav.side-menu li {
+            position: relative;
+            display: block;
+            cursor: pointer;
+        }
+
+        .nav.side-menu li a {
+            color: #E7E7E7;
+            display: block;
+            padding: 13px 15px 13px 15px;
+            font-size: 14px;
+            text-decoration: none;
+            border-top: 1px solid #3E5266;
+        }
+
+        .nav.side-menu li a:hover {
+            background: #425567;
+            color: #fff;
+        }
+
+        .nav.side-menu li.active a {
+            background: #1ABB9C;
+            color: #fff;
+        }
+
+        .nav.side-menu li a i {
+            font-size: 17px;
+            margin-right: 6px;
+            color: #BDC3C7;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav.side-menu .fa-chevron-down {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 14px;
+            color: #BDC3C7;
+        }
+
+        /* Child menu styles */
+        .nav.child_menu {
+            display: none;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            background: #3E5266;
+        }
+
+        .nav.child_menu li a {
+            color: #BDC3C7;
+            font-size: 12px;
+            padding: 7px 10px 7px 35px;
+            border-top: 1px solid #425567;
+        }
+
+        .nav.child_menu li a:hover {
+            background: #425567;
+            color: #fff;
+        }
+
+        /* Top Navigation */
+        .top_nav {
+            display: block;
+            margin-left: 230px;
+            width: calc(100% - 230px);
+            background: #EDEDED;
+            border-bottom: 1px solid #D9DEE4;
+            position: fixed;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .nav_menu {
+            background: white;
+            border-bottom: 1px solid #D9DEE4;
+            padding: 0;
+        }
+
+        .nav.toggle {
+            background: #EDEDED;
+            width: 48px;
+            float: left;
+            text-align: center;
+            height: 48px;
+            line-height: 48px;
+            cursor: pointer;
+        }
+
+        .nav.toggle a {
+            color: #73879C;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            float: right;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-right {
+            list-style: none;
+            margin: 0;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            height: 48px;
+        }
+
+        .navbar-right li {
+            display: inline-block;
+            position: relative;
+        }
+
+        .navbar-right li.dropdown .dropdown-toggle {
+            background: transparent;
+            border: none;
+            color: #73879C;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile img {
+            width: 29px;
+            height: 29px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .dropdown-menu {
+            background: white;
+            border: 1px solid #D9DEE4;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        }
+
+        .dropdown-item {
+            color: #73879C;
+            padding: 3px 20px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+            color: #262626;
+        }
+
+        /* Main content */
+        .right_col {
+            background: #EDEDED;
+            margin-left: 230px;
+            margin-top: 48px;
+            padding: 10px 20px;
+            min-height: calc(100vh - 48px);
+        }
+
+        /* Alerts */
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        /* Parking specific styles */
+        .parking-card {
+            transition: transform 0.2s;
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        .parking-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .space-occupied {
+            background-color: #dc3545 !important;
+            color: white;
+        }
+
+        .space-available {
+            background-color: #198754 !important;
+            color: white;
+        }
+
+        .plate-input {
+            text-transform: uppercase;
+        }
+
+        .badge.bg-red {
+            background-color: #E74C3C !important;
+        }
+
+        .info-number .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            font-size: 9px;
+            padding: 2px 5px;
+        }
+
+        /* Notification styles */
+        .msg_list {
+            width: 300px;
+            right: 0;
+            left: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .msg_list li {
+            border-bottom: 1px solid #eee;
+            padding: 8px;
+        }
+
+        .msg_list .image img {
+            border-radius: 2px 2px 2px 2px;
+            height: 40px;
+            margin-right: 10px;
+            width: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .left_col {
+                margin-left: -230px;
+            }
+            
+            .left_col.active {
+                margin-left: 0;
+            }
+            
+            .top_nav, .right_col {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="nav-md">
+    <div class="container-body">
+        <!-- Left Sidebar -->
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="sidebar-header">
+                    <div class="profile_pic">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="..." class="img-circle profile_img" style="width: 70px; height: 70px;">
+                    </div>
+                    <h3>Sistema</h3>
+                    <p>Parqueadero</p>
+                </div>
+
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li><a><i class="fa fa-home"></i> Administración <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('admin.index') ?? '#' }}">Panel Principal</a></li>
+                                    <li><a href="{{ route('admin.roles.index') ?? '#' }}">Roles</a></li>
+                                    <li><a href="{{ route('admin.usuarios.index') ?? '#' }}">Usuarios</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a><i class="fa fa-edit"></i> Gestión Documentos <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('documentos.index') ?? '#' }}">Documentos</a></li>
+                                    <li><a href="{{ route('dashboard') ?? '#' }}">Estadísticas</a></li>
+                                    <li><a href="{{ route('categorias.index') ?? '#' }}">Categorías</a></li>
+                                    <li><a href="{{ route('tipo_documentos.index') ?? '#' }}">Tipo De Documentos</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a><i class="fa fa-car"></i> Gestión Parqueadero <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('parking.dashboard') ?? '#' }}">Dashboard</a></li>
+                                    <li><a href="{{ route('parking.history') ?? '#' }}">Historial</a></li>
+                                    <li><a href="{{ route('vehicles.index') ?? '#' }}">Vehículos</a></li>
+                                    <li><a href="{{ route('tipo_vehiculos.index') ?? '#' }}">Tipos de Vehículo</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <div class="nav toggle">
+                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                </div>
+                <nav class="nav navbar-nav">
+                    <ul class="navbar-right">
+                        @auth
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle info-number" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell-o"></i>
+                                @php $count = auth()->user()->unreadNotifications->count(); @endphp
+                                @if($count > 0)
+                                <span class="badge bg-red">{{ $count }}</span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end list-unstyled msg_list" role="menu">
+                                @forelse(auth()->user()->unreadNotifications as $notification)
+                                <li class="nav-item">
+                                    <a class="dropdown-item">
+                                        <span class="image">
+                                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario" />
+                                        </span>
+                                        <span>
+                                            <span>{{ Auth::user()->name }}</span>
+                                            <span class="time">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </span>
+                                        <span class="message">
+                                            {{ $notification->data['mensaje'] ?? 'Nueva notificación' }}
+                                        </span>
+                                    </a>
+                                </li>
+                                @empty
+                                <li class="nav-item text-center text-muted py-2">Sin notificaciones</li>
+                                @endforelse
+                                <li class="nav-item text-center">
+                                    <form method="POST" action="{{ route('notificaciones.leer') ?? '#' }}">
+                                        @csrf
+                                        <button class="btn btn-sm btn-primary w-100">Marcar como leídas</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        @endauth
+                        <li class="nav-item dropdown" style="padding-left: 15px;">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Usuario">{{ Auth::user()->name ?? 'Usuario' }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="javascript:;"> Perfil</a>
+                                <a class="dropdown-item" href="javascript:;">
+                                    <span class="badge bg-red float-end">50%</span>
+                                    <span>Configuración</span>
+                                </a>
+                                <a class="dropdown-item" href="javascript:;">Ayuda</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out float-end"></i><span>Salir</span>
+                                </a>
+                            </div>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="right_col" role="main">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @yield('content')
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Toggle sidebar menu
+            $('#menu_toggle').click(function() {
+                if ($('body').hasClass('nav-md')) {
+                    $('body').removeClass('nav-md').addClass('nav-sm');
+                    $('.left_col').css('margin-left', '-230px');
+                    $('.top_nav, .right_col').css('margin-left', '0');
+                } else {
+                    $('body').removeClass('nav-sm').addClass('nav-md');
+                    $('.left_col').css('margin-left', '0');
+                    $('.top_nav, .right_col').css('margin-left', '230px');
+                }
+            });
+
+            // Handle sidebar submenu
+            $('.side-menu li a').click(function(e) {
+                var $this = $(this);
+                var $submenu = $this.next('.child_menu');
+                
+                if ($submenu.length > 0) {
+                    e.preventDefault();
+                    
+                    // Close other submenus
+                    $('.side-menu .child_menu').not($submenu).slideUp();
+                    $('.side-menu li').not($this.parent()).removeClass('active');
+                    
+                    // Toggle current submenu
+                    $submenu.slideToggle();
+                    $this.parent().toggleClass('active');
+                }
+            });
+
+            // Set active menu item based on current URL
+            var currentUrl = window.location.href;
+            $('.side-menu a[href="' + currentUrl + '"]').parent().addClass('active');
+            $('.child_menu a[href="' + currentUrl + '"]').closest('.side-menu > li').addClass('active');
+            $('.child_menu a[href="' + currentUrl + '"]').closest('.child_menu').show();
+        });
+    </script>
+    @yield('scripts')
 </body>
-
 </html>
