@@ -46,7 +46,9 @@
                                     <td><strong>{{ $vehicle->plate }}</strong></td>
                                     <td>
                                         <span class="badge bg-secondary">
-                                            {{ ucfirst($vehicle->type) }}
+                                            {{ ucfirst($vehicle->tipo->nombre ?? 'Sin tipo') }}
+
+
                                         </span>
                                     </td>
                                     <td>{{ $vehicle->brand }} {{ $vehicle->model }}</td>
@@ -106,19 +108,20 @@
                     <div class="mb-3">
                         <label for="plate" class="form-label">Placa</label>
                         <input type="text" class="form-control plate-input" name="plate" required 
-                               pattern="[A-Z]{3}[0-9]{2}[0-9A-Z]" maxlength="6">
+                            pattern="[A-Z]{3}[0-9]{2}[0-9A-Z]" maxlength="6">
                         <div class="form-text">Formato: ABC123 o ABC12D</div>
                     </div>
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Tipo</label>
-                        <select class="form-select" name="type" required>
-                            <option value="car">Automóvil</option>
-                            <option value="motorcycle">Motocicleta</option>
-                            <option value="truck">Camión</option>
-                            <option value="bus">Bus</option>
-                            <option value="other">Otro</option>
+
+                   <div class="mb-3">
+
+                        <select name="tipo_vehiculo_id" id="type" class="form-select" required>
+                            <option value="">Seleccione tipo de vehículo</option>
+                            @foreach ($tipos as $tipo)
+                            <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
+                            @endforeach
                         </select>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">

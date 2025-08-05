@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Espacios_parqueadero;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -33,8 +34,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategoriaSeeder::class,
             TipoDocumentoSeeder::class,
-            ParkingSpaceSeeder::class,
-
+            // ParkingSpaceSeeder::class,
+            ZonaSeeder::class,
+            Espacios_parqueadero::class,
         ]);
+
     }
 }
