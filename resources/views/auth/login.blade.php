@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Empoobando</title>
+    <title>Iniciar Sesión - Parqueadero del Pueblo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
             height: 100vh;
             margin: 0;
-            background-color: #f5f8fa;
+            background-color: #f4f6f9;
             display: flex;
         }
 
@@ -30,7 +30,7 @@
 
         .brand-side {
             flex: 1;
-            background: linear-gradient(to bottom right, #1ca7ec, #0077be);
+            background: linear-gradient(to bottom right, #2c3e50, #3498db);
             color: white;
             display: flex;
             flex-direction: column;
@@ -46,18 +46,18 @@
         }
 
         .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(28, 167, 236, 0.25);
-            border-color: #1ca7ec;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            border-color: #3498db;
         }
 
         .btn-primary {
-            background-color: #0077be;
-            border-color: #0077be;
+            background-color: #2980b9;
+            border-color: #2980b9;
         }
 
         .btn-primary:hover {
-            background-color: #005f96;
-            border-color: #005f96;
+            background-color: #1c5981;
+            border-color: #1c5981;
         }
     </style>
 </head>
@@ -65,12 +65,13 @@
 <body>
     <div class="login-container">
 
-        <!-- Columna de Marca (sin imagen) -->
+        <!-- Columna de Marca -->
         <div class="brand-side">
-            <div style="font-size: 100px;">💧</div>
-            <h1 class="mt-3">Empoobando</h1>
-            <p>Sistema de Gestión Documental</p>
+            <div style="font-size: 100px;">🚗</div>
+            <h1 class="mt-3">Parqueadero del Pueblo</h1>
+            <p>Sistema de Gestión de Parqueo</p>
         </div>
+
         <!-- Columna de Login -->
         <div class="login-form">
             <div class="w-100" style="max-width: 400px;">
@@ -120,7 +121,6 @@
                 </form>
             </div>
         </div>
-
 
     </div>
 </body>
