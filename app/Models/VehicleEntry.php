@@ -12,7 +12,7 @@ class VehicleEntry extends Model
 
     protected $fillable = [
         'vehicle_id',
-        'parking_space_id',
+        'espacio_id',
         'entry_time',
         'exit_time'
     ];
@@ -27,10 +27,15 @@ class VehicleEntry extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function parkingSpace(): BelongsTo
-    {
-        return $this->belongsTo(ParkingSpace::class);
-    }
+    // public function parkingSpace(): BelongsTo
+    // {
+    //     return $this->belongsTo(ParkingSpace::class);
+    // }
+
+public function espacio(): BelongsTo
+{
+    return $this->belongsTo(Espacios_parqueadero::class, 'espacio_id');
+}
 
     public function getDurationAttribute()
     {

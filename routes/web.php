@@ -13,6 +13,11 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ParkingSpaceController;
 use App\Http\Controllers\VehicleEntryController;
 use App\Http\Controllers\TipoVehiculoWebController;
+use App\Http\Controllers\ZonaController;
+use App\Http\Controllers\EspacioParqueaderoController;
+use App\Http\Controllers\CompatibilidadController;
+use App\Http\Controllers\TarifaController;
+
 
 Route::post('/notificaciones/leidas', function () {
     auth()->user()->unreadNotifications->markAsRead();
@@ -99,12 +104,31 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/salida', [VehicleEntryController::class, 'registerExit'])->name('exit');
     });
 
+    // Rutas para entradas de zonas
+    Route::resource('zonas', ZonaController::class);
+
+    // Rutas para entradas de espacios
+    Route::resource('espacios', EspacioParqueaderoController::class);
+
+    // Rutas para entradas de Compatibilidad
+    Route::resource('compatibilidades', CompatibilidadController::class)->parameters([
+    'compatibilidades' => 'compatibilidad'
+]);
+
+
+    // Rutas para entradas de tarifas
+    Route::resource('tarifas', TarifaController::class);
+
+    
+
+Route::get('/espacios-disponibles/{tipoVehiculoId}', [App\Http\Controllers\VehicleEntryController::class, 'espaciosDisponibles']);
 
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('tipo_vehiculos', TipoVehiculoWebController::class);
-});
 
+
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('tipo_vehiculos', TipoVehiculoWebController::class);
+    });
 });
 require __DIR__ . '/auth.php';

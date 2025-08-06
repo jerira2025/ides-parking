@@ -13,7 +13,7 @@ class Vehicle extends Model
 
     protected $fillable = [
         'plate',
-        'type',
+        'tipo_vehiculo_id',
         'brand',
         'model',
         'color',
@@ -44,4 +44,14 @@ class Vehicle extends Model
     {
         return $this->getCurrentEntry() !== null;
     }
+
+    public function tipo()
+{
+    return $this->belongsTo(TipoVehiculo::class, 'tipo_vehiculo_id');
+}
+
+    public function tipoVehiculo()
+{
+    return $this->belongsTo(TipoVehiculo::class);
+}
 }

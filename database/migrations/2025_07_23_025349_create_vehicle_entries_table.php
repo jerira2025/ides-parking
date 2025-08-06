@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('vehicle_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vehicle_id')->constrained()->onDelete('cascade');
-            $table->foreignId('parking_space_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('espacio_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamp('entry_time');
             $table->timestamp('exit_time')->nullable();
             $table->timestamps();

@@ -1,6 +1,7 @@
 {{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -293,18 +294,20 @@
             .left_col {
                 margin-left: -230px;
             }
-            
+
             .left_col.active {
                 margin-left: 0;
             }
-            
-            .top_nav, .right_col {
+
+            .top_nav,
+            .right_col {
                 margin-left: 0;
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body class="nav-md">
     <div class="container-body">
         <!-- Left Sidebar -->
@@ -346,6 +349,25 @@
                                     <li><a href="{{ route('tipo_vehiculos.index') ?? '#' }}">Tipos de Vehículo</a></li>
                                 </ul>
                             </li>
+
+                            <li>
+                                <a><i class="fa fa-minus-square"></i> Gestión Espacios <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('zonas.index') ?? '#' }}">Zonas</a></li>
+                                    <li><a href="{{ route('espacios.index') ?? '#' }}">Espacios</a></li>
+                                    <li><a href="{{ route('compatibilidades.index') ?? '#' }}">Espacios Compartidos</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a><i class= "fa fa-usd"></i> Gestión tarifas <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('tarifas.index') ?? '#' }}">Tarifas</a></li>
+                                </ul>
+                            </li>
+
+
+
                         </ul>
                     </div>
                 </div>
@@ -425,17 +447,17 @@
         <!-- Main Content -->
         <div class="right_col" role="main">
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @yield('content')
@@ -463,14 +485,14 @@
             $('.side-menu li a').click(function(e) {
                 var $this = $(this);
                 var $submenu = $this.next('.child_menu');
-                
+
                 if ($submenu.length > 0) {
                     e.preventDefault();
-                    
+
                     // Close other submenus
                     $('.side-menu .child_menu').not($submenu).slideUp();
                     $('.side-menu li').not($this.parent()).removeClass('active');
-                    
+
                     // Toggle current submenu
                     $submenu.slideToggle();
                     $this.parent().toggleClass('active');
@@ -486,4 +508,5 @@
     </script>
     @yield('scripts')
 </body>
+
 </html>

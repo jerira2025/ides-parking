@@ -13,7 +13,7 @@
       <li><a href="{{ route('documentos.index') }}">Documentos</a></li>
       <li><a href="{{ route('dashboard') }}">Estadísticas</a></li>
       <li><a href="{{ route('categorias.index') }}">Categorías</a></li>
-       <li><a href="{{ route('tipo_documentos.index') }}">Tipo De Documentos</a></li>
+      <li><a href="{{ route('tipo_documentos.index') }}">Tipo De Documentos</a></li>
     </ul>
   </li>
 
@@ -23,6 +23,8 @@
     <li><a href="{{ route('tipo_vehiculos.index') }}">Tipos de Vehículo</a></li>
   </ul> -->
 </li>
+
+
 
 
 
