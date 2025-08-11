@@ -4,9 +4,9 @@
 <h1>Espacios de Parqueadero</h1>
 <a href="{{ route('espacios.create') }}" class="btn btn-primary mb-3">Nuevo Espacio</a>
 
-@if(session('success'))
+<!-- @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
-@endif
+@endif -->
 
 <table class="table">
     <thead>

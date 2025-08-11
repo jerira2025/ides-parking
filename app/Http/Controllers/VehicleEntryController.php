@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Models\Compatibilidades;
-use App\Models\Zona;
+use App\Models\Zona; 
 use App\Models\Espacios_parqueadero;
 use App\Models\TipoVehiculo;
 
@@ -18,7 +18,7 @@ class VehicleEntryController extends Controller
 {
     public function index()
     {
-        $activeEntries = VehicleEntry::with(['vehicle.tipo', 'espacio.zona'])
+        $activeEntries = VehicleEntry::with(['vehicle.tipoVehiculo', 'espacio.zona'])
             ->whereNull('exit_time')
             ->latest('entry_time')
             ->get();
@@ -184,7 +184,7 @@ class VehicleEntryController extends Controller
 
     public function history()
     {
-        $entries = VehicleEntry::with(['vehicle.tipo', 'espacio.zona'])
+        $entries = VehicleEntry::with(['vehicle.tipoVehiculo', 'espacio.zona'])
             ->orderBy('entry_time', 'desc')
             ->paginate(20);
 
@@ -207,5 +207,12 @@ class VehicleEntryController extends Controller
             ->get();
 
         return response()->json($espacios);
+    }
+
+    public function estadoEspacios()
+    {
+        $espacios = Espacios_parqueadero::with('zona')->get();
+
+        return view('parking.spaces', compact('espacios'));
     }
 }

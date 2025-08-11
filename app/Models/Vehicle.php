@@ -45,13 +45,9 @@ class Vehicle extends Model
         return $this->getCurrentEntry() !== null;
     }
 
-    public function tipo()
-{
-    return $this->belongsTo(TipoVehiculo::class, 'tipo_vehiculo_id');
-}
 
     public function tipoVehiculo()
-{
-    return $this->belongsTo(TipoVehiculo::class);
-}
+    {
+        return $this->belongsTo(TipoVehiculo::class, 'tipo_vehiculo_id');
+    }
 }
