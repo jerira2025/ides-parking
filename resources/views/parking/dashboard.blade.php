@@ -174,6 +174,7 @@
                                 <td>
                                     <span class="badge bg-secondary">{{ $entry->vehicle->tipoVehiculo->nombre ?? 'Desconocido' }}</span>
                                 </td>
+                                
 
 
                                 <td>{{ $entry->vehicle->brand }} {{ $entry->vehicle->model }}</td>

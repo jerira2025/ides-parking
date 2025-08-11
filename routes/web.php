@@ -102,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/history', [VehicleEntryController::class, 'history'])->name('history');
         Route::post('/entrada', [VehicleEntryController::class, 'registerEntry'])->name('entry');
         Route::post('/salida', [VehicleEntryController::class, 'registerExit'])->name('exit');
+        Route::get('/spaces', [VehicleEntryController::class, 'estadoEspacios'])->name('spaces');
     });
 
     // Rutas para entradas de zonas
@@ -122,8 +123,6 @@ Route::middleware(['auth'])->group(function () {
     
 
 Route::get('/espacios-disponibles/{tipoVehiculoId}', [App\Http\Controllers\VehicleEntryController::class, 'espaciosDisponibles']);
-
-
 
 
 

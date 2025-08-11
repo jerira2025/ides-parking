@@ -34,7 +34,17 @@ class Espacios_parqueadero extends Model
     }
 
     public function vehicleEntries()
-{
-    return $this->hasMany(VehicleEntry::class, 'espacio_id');
-}
+    {
+        return $this->hasMany(VehicleEntry::class, 'espacio_id');
+    }
+
+
+    public function getEstadoAttribute()
+    {
+        $ocupado = VehicleEntry::where('espacio_id', $this->id)
+            ->whereNull('exit_time')
+            ->exists();
+
+        return $ocupado ? 'ocupado' : 'libre';
+    }
 }

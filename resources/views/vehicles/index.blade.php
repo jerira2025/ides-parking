@@ -26,68 +26,68 @@
             </div>
             <div class="card-body">
                 @if($vehicles->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Placa</th>
-                                    <th>Tipo</th>
-                                    <th>Marca/Modelo</th>
-                                    <th>Color</th>
-                                    <th>Propietario</th>
-                                    <th>Estado</th>
-                                    <th>Registrado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($vehicles as $vehicle)
-                                <tr>
-                                    <td><strong>{{ $vehicle->plate }}</strong></td>
-                                    <td>
-                                        <span class="badge bg-secondary">
-                                            {{ ucfirst($vehicle->tipo->nombre ?? 'Sin tipo') }}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Marca/Modelo</th>
+                                <th>Color</th>
+                                <th>Propietario</th>
+                                <th>Estado</th>
+                                <th>Registrado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($vehicles as $vehicle)
+                            <tr>
+                                <td><strong>{{ $vehicle->plate }}</strong></td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ ucfirst($vehicle->tipoVehiculo->nombre ?? 'Sin tipo') }}
 
 
-                                        </span>
-                                    </td>
-                                    <td>{{ $vehicle->brand }} {{ $vehicle->model }}</td>
-                                    <td>{{ $vehicle->color }}</td>
-                                    <td>
-                                        @if($vehicle->owner)
-                                            {{ $vehicle->owner->name }}
-                                        @else
-                                            <span class="text-muted">Sin asignar</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($vehicle->isParked())
-                                            <span class="badge bg-warning text-dark">Estacionado</span>
-                                        @else
-                                            <span class="badge bg-success">Libre</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $vehicle->created_at->format('d/m/Y') }}</td>
-                                    <td>
-                                        <a href="{{ route('vehicles.show', $vehicle) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Paginación -->
-                    <div class="d-flex justify-content-center">
-                        {{ $vehicles->links() }}
-                    </div>
+                                    </span>
+                                </td>
+                                <td>{{ $vehicle->brand }} {{ $vehicle->model }}</td>
+                                <td>{{ $vehicle->color }}</td>
+                                <td>
+                                    @if($vehicle->owner)
+                                    {{ $vehicle->owner->name }}
+                                    @else
+                                    <span class="text-muted">Sin asignar</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($vehicle->isParked())
+                                    <span class="badge bg-warning text-dark">Estacionado</span>
+                                    @else
+                                    <span class="badge bg-success">Libre</span>
+                                    @endif
+                                </td>
+                                <td>{{ $vehicle->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ route('vehicles.show', $vehicle) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="d-flex justify-content-center">
+                    {{ $vehicles->links() }}
+                </div>
                 @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-car fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">No hay vehículos registrados</p>
-                    </div>
+                <div class="text-center py-4">
+                    <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay vehículos registrados</p>
+                </div>
                 @endif
             </div>
         </div>
@@ -107,12 +107,12 @@
                     @csrf
                     <div class="mb-3">
                         <label for="plate" class="form-label">Placa</label>
-                        <input type="text" class="form-control plate-input" name="plate" required 
+                        <input type="text" class="form-control plate-input" name="plate" required
                             pattern="[A-Z]{3}[0-9]{2}[0-9A-Z]" maxlength="6">
                         <div class="form-text">Formato: ABC123 o ABC12D</div>
                     </div>
 
-                   <div class="mb-3">
+                    <div class="mb-3">
 
                         <select name="tipo_vehiculo_id" id="type" class="form-select" required>
                             <option value="">Seleccione tipo de vehículo</option>
@@ -153,34 +153,34 @@
 
 @section('scripts')
 <script>
-$(document).ready(function() {
-    $('.plate-input').on('input', function() {
-        this.value = this.value.toUpperCase();
-    });
+    $(document).ready(function() {
+        $('.plate-input').on('input', function() {
+            this.value = this.value.toUpperCase();
+        });
 
-    $('#addVehicleForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        $.ajax({
-            url: '{{ route("vehicles.store") }}',
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                $('#addVehicleModal').modal('hide');
-                location.reload();
-            },
-            error: function(xhr) {
-                const response = xhr.responseJSON;
-                let message = 'Error al registrar vehículo';
-                
-                if (response && response.errors) {
-                    message = Object.values(response.errors).flat().join(', ');
+        $('#addVehicleForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '{{ route("vehicles.store") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#addVehicleModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    let message = 'Error al registrar vehículo';
+
+                    if (response && response.errors) {
+                        message = Object.values(response.errors).flat().join(', ');
+                    }
+
+                    alert(message);
                 }
-                
-                alert(message);
-            }
+            });
         });
     });
-});
 </script>
 @endsection
