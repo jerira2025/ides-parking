@@ -12,7 +12,7 @@ use App\Models\Compatibilidades;
 use App\Models\Zona; 
 use App\Models\Espacios_parqueadero;
 use App\Models\TipoVehiculo;
-
+use App\Models\ParkingSpace;
 
 class VehicleEntryController extends Controller
 {
@@ -27,9 +27,12 @@ class VehicleEntryController extends Controller
         $ocupados = VehicleEntry::whereNull('exit_time')->pluck('espacio_id');
         $availableSpaces = Espacios_parqueadero::whereNotIn('id', $ocupados)->count();
 
+         // Lista completa de espacios disponibles (para llenar el select)
+        $espaciosDisponibles = Espacios_parqueadero::whereNotIn('id', $ocupados)->with('zona')->get();
+
         $totalSpaces = Espacios_parqueadero::count();
         $tipos = TipoVehiculo::all();
-        return view('parking.dashboard', compact('activeEntries', 'availableSpaces', 'totalSpaces', 'tipos',));
+        return view('parking.dashboard', compact('activeEntries', 'availableSpaces', 'totalSpaces', 'tipos', 'espaciosDisponibles'));
     }
 
 
@@ -194,6 +197,7 @@ class VehicleEntryController extends Controller
 
     public function espaciosDisponibles($tipoVehiculoId)
     {
+        
         $espacios = DB::table('espacios_parqueadero')
             ->join('compatibilidades', 'espacios_parqueadero.zona_id', '=', 'compatibilidades.zona_id')
             ->join('zonas', 'espacios_parqueadero.zona_id', '=', 'zonas.id')
@@ -209,10 +213,16 @@ class VehicleEntryController extends Controller
         return response()->json($espacios);
     }
 
-    public function estadoEspacios()
-    {
-        $espacios = Espacios_parqueadero::with('zona')->get();
+   public function estadoEspacios()
+{
+    $espacios = Espacios_parqueadero::with('zona')->get();
+    return view('parking.spaces', compact('espacios'));
+}
 
-        return view('parking.spaces', compact('espacios'));
-    }
+public function invoiceHtml($id)
+{
+    $entry = VehicleEntry::with(['vehicle.tipo', 'espacio.zona'])->findOrFail($id);
+    return view('parking.invoice-html', compact('entry'));
+}
+
 }

@@ -89,12 +89,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="entry_space" class="form-label">Espacio Disponible</label>
-                        <select class="form-select" id="entry_space" name="espacio_id" required>
-                            <option value="">Seleccione un tipo de vehículo primero</option>
-                        </select>
-                    </div>
-
+    <label for="entry_space" class="form-label">Espacio Disponible</label>
+    <select class="form-select" id="entry_space" name="espacio_id" required>
+        
+    </select>
+</div>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -165,6 +164,7 @@
                                 <th>Espacio</th>
                                 <th>Hora de Entrada</th>
                                 <th>Tiempo Estacionado</th>
+                                <th>Factura</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,6 +195,11 @@
                                         {{ $entry->entry_time->diffForHumans(null, true) }}
                                     </span>
                                 </td>
+                                <td>
+   <button class="btn btn-sm btn-primary btn-imprimir" data-entry-id="{{ $entry->id }}">
+    <i class="fas fa-file-pdf"></i> Imprimir
+</button>
+</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -209,6 +214,20 @@
             </div>
         </div>
     </div>
+</div>
+<!-- Modal para la factura -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Factura de Entrada</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="invoiceContent">
+        <div class="text-center text-muted">Cargando factura...</div>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 
@@ -359,5 +378,29 @@
             }
         });
     });
+    // Botón para imprimir factura en modal
+$(document).on('click', '.btn-imprimir', function () {
+    const entryId = $(this).data('entry-id');
+    const modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+    const $content = $('#invoiceContent');
+
+    $content.html('<div class="text-center text-muted">Cargando factura...</div>');
+
+    $.ajax({
+        url: '/factura-html/' + entryId, // Ruta que devuelve la factura HTML (no PDF)
+        method: 'GET',
+        success: function (html) {
+            $content.html(html);
+            modal.show();
+
+            $('#invoiceModal').on('shown.bs.modal', function () {
+                window.print();
+            });
+        },
+        error: function () {
+            $content.html('<div class="alert alert-danger">Error al cargar la factura.</div>');
+        }
+    });
+});
 </script>
 @endsection

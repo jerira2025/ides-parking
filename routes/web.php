@@ -124,7 +124,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/espacios-disponibles/{tipoVehiculoId}', [App\Http\Controllers\VehicleEntryController::class, 'espaciosDisponibles']);
 
-
+// Factura QR
+Route::get('/factura-html/{id}', [VehicleEntryController::class, 'invoiceHtml']);
 
     Route::middleware(['auth'])->group(function () {
         Route::resource('tipo_vehiculos', TipoVehiculoWebController::class);
