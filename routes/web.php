@@ -17,6 +17,7 @@ use App\Http\Controllers\ZonaController;
 use App\Http\Controllers\EspacioParqueaderoController;
 use App\Http\Controllers\CompatibilidadController;
 use App\Http\Controllers\TarifaController;
+use App\Http\Controllers\ParkingController;
 
 
 Route::post('/notificaciones/leidas', function () {
@@ -131,4 +132,10 @@ Route::get('/factura-html/{id}', [VehicleEntryController::class, 'invoiceHtml'])
         Route::resource('tipo_vehiculos', TipoVehiculoWebController::class);
     });
 });
+
+Route::get('/', function(){ return redirect()->route('parking.index'); });
+Route::resource('parking', ParkingController::class);
+Route::put('parking/{parking}/checkout', [ParkingController::class, 'checkout'])->name('parking.checkout');
+Route::get('parking/{parking}/invoice', [ParkingController::class, 'invoice'])->name('parking.invoice');
+
 require __DIR__ . '/auth.php';
