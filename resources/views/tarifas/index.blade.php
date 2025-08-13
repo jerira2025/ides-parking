@@ -5,9 +5,6 @@
 
 <a href="{{ route('tarifas.create') }}" class="btn btn-primary mb-3">Crear nueva tarifa</a>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <table class="table table-bordered">
     <thead>

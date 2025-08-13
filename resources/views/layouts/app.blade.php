@@ -324,7 +324,7 @@
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                     <div class="menu_section">
                         <ul class="nav side-menu">
-                            <li><a><i class="fa fa-home"></i> Administración <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-home"></i> Administración </a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('admin.index') ?? '#' }}">Panel Principal</a></li>
                                     <li><a href="{{ route('admin.roles.index') ?? '#' }}">Roles</a></li>
@@ -332,7 +332,7 @@
                                 </ul>
                             </li>
                             <li>
-                                <a><i class="fa fa-edit"></i> Gestión Documentos <span class="fa fa-chevron-down"></span></a>
+                                <a><i class="fa fa-edit"></i> Gestión Documentos</span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('documentos.index') ?? '#' }}">Documentos</a></li>
                                     <li><a href="{{ route('dashboard') ?? '#' }}">Estadísticas</a></li>
@@ -341,7 +341,7 @@
                                 </ul>
                             </li>
                             <li>
-                                <a><i class="fa fa-car"></i> Gestión Parqueadero <span class="fa fa-chevron-down"></span></a>
+                                <a><i class="fa fa-car"></i> Gestión Parqueadero </a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('parking.dashboard') ?? '#' }}">Dashboard</a></li>
                                     <li><a href="{{ route('parking.history') ?? '#' }}">Historial</a></li>
@@ -349,9 +349,17 @@
                                     <li><a href="{{ route('tipo_vehiculos.index') ?? '#' }}">Tipos de Vehículo</a></li>
                                 </ul>
                             </li>
+ 
+                            
+                            <li>
+                                <a><i class= "fa fa-minus-square"></i>Disponibilidad Parqueadero </span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('parking.spaces') ?? '#' }}">Espacios libres</a></li>
+                                </ul>
+                            </li>
 
                             <li>
-                                <a><i class="fa fa-minus-square"></i> Gestión Espacios <span class="fa fa-chevron-down"></span></a>
+                                <a><i class="fa fa-arrows-h"></i> Gestión Espacios</span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('zonas.index') ?? '#' }}">Zonas</a></li>
                                     <li><a href="{{ route('espacios.index') ?? '#' }}">Espacios</a></li>
@@ -360,7 +368,7 @@
                             </li>
 
                             <li>
-                                <a><i class= "fa fa-usd"></i> Gestión tarifas <span class="fa fa-chevron-down"></span></a>
+                                <a><i class= "fa fa-usd"></i> Gestión tarifas </span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('tarifas.index') ?? '#' }}">Tarifas</a></li>
                                 </ul>
@@ -463,6 +471,16 @@
             @yield('content')
         </div>
     </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('parking.index') }}">Parqueadero</a>
+        </div>
+    </nav>
+
+    @yield('content')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

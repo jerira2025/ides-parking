@@ -4,9 +4,6 @@
 <h1>Compatibilidades entre Zonas y Tipos de Vehículo</h1>
 <a href="{{ route('compatibilidades.create') }}" class="btn btn-primary">Crear nueva compatibilidad</a>
 
-@if(session('success'))
-<div class="alert alert-success mt-3">{{ session('success') }}</div>
-@endif
 
 <table class="table table-bordered mt-3">
     <thead>

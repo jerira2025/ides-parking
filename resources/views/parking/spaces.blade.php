@@ -1,48 +1,68 @@
-{{-- resources/views/parking/spaces.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Espacios de Parqueo')
-
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <h1 class="mb-4">
-            <i class="fas fa-parking me-2"></i>Espacios de Parqueo
-        </h1>
+<div class="x_panel">
+    <div class="x_title d-flex justify-content-between align-items-center">
+        <h2>Visualización de Espacios Parqueadero</h2>
     </div>
-</div>
 
-<div class="row">
-    @foreach($spaces->groupBy('zone') as $zone => $zoneSpaces)
-    <div class="col-md-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    Zona {{ $zone ?? 'Sin Zona' }} 
-                    <span class="badge bg-secondary ms-2">{{ $zoneSpaces->count() }} espacios</span>
-                    <span class="badge bg-success ms-1">{{ $zoneSpaces->where('is_available', true)->count() }} disponibles</span>
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    @foreach($zoneSpaces as $space)
-                    <div class="col-md-2 col-sm-3 col-4 mb-3">
-                        <div class="card text-center {{ $space->is_available ? 'space-available' : 'space-occupied' }}">
-                            <div class="card-body py-2">
-                                <h6 class="card-title mb-1">#{{ $space->id }}</h6>
-                                @if(!$space->is_available && $space->getCurrentEntry())
-                                    <small>{{ $space->getCurrentEntry()->vehicle->plate }}</small>
-                                @else
-                                    <small>Libre</small>
-                                @endif
-                            </div>
-                        </div>
+    <div class="x_content">
+        @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+
+
+        {{-- Filtros --}}
+        <div class="mb-4">
+            <button class="btn btn-secondary filter-btn" data-filter="all">Todos</button>
+            <button class="btn btn-success filter-btn" data-filter="libre">Libres</button>
+            <button class="btn btn-danger filter-btn" data-filter="ocupado">Ocupados</button>
+        </div>
+
+        {{-- Representación gráfica --}}
+        <div class="row" id="espacios-container">
+            @foreach($espacios as $espacio)
+            <div class="col-md-2 col-sm-3 col-4 mb-3 espacio-card" data-estado="{{ strtolower($espacio->estado) }}">
+                <div class="card text-center 
+                @if($espacio->estado === 'libre') bg-success text-white
+                @else bg-danger text-white
+                @endif
+            ">
+                    <div class="card-body p-2">
+                        <h5 class="card-title">Espacio {{ $espacio->numero_espacio }}</h5>
+
+                        {{-- Línea divisoria --}}
+                        <hr class="bg-light my-2">
+
+                        {{-- Estado en negrita --}}
+                        <p class="card-text mb-1 fw-bold">{{ ucfirst($espacio->estado) }}</p>
+
+                        {{-- Zona --}}
+                        <p class="card-text mb-1">{{ $espacio->zona->nombre ?? 'Sin zona' }}</p>
                     </div>
-                    @endforeach
                 </div>
             </div>
+            @endforeach
         </div>
+
+
     </div>
-    @endforeach
 </div>
+
+{{-- Script para filtrar --}}
+<script>
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            document.querySelectorAll('.espacio-card').forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-estado') === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 @endsection

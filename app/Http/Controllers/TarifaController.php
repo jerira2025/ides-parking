@@ -27,22 +27,37 @@ class TarifaController extends Controller
         $request->validate([
             'zona_id' => 'required|exists:zonas,id',
             'tipo_vehiculo_id' => 'required|exists:tipo_vehiculos,id',
-            'precio_hora' => 'nullable|numeric|min:0',
-            'precio_dia' => 'nullable|numeric|min:0',
+            'precio_hora' => 'nullable',
+            'precio_dia' => 'nullable',
         ]);
 
-        $existe = Tarifa::where('zona_id', $request->zona_id)
-            ->where('tipo_vehiculo_id', $request->tipo_vehiculo_id)
+        // Convertir los precios al formato numérico válido para Laravel
+        $data = $request->all();
+        $data['precio_hora'] = $data['precio_hora'] !== null
+            ? str_replace(['.', ','], ['', '.'], $data['precio_hora'])
+            : null;
+        $data['precio_dia'] = $data['precio_dia'] !== null
+            ? str_replace(['.', ','], ['', '.'], $data['precio_dia'])
+            : null;
+
+        $existe = Tarifa::where('zona_id', $data['zona_id'])
+            ->where('tipo_vehiculo_id', $data['tipo_vehiculo_id'])
             ->exists();
 
         if ($existe) {
             return back()->withErrors(['duplicado' => 'Ya existe esta tarifa.'])->withInput();
         }
 
-        Tarifa::create($request->only(['zona_id', 'tipo_vehiculo_id', 'precio_hora', 'precio_dia']));
+        Tarifa::create([
+            'zona_id' => $data['zona_id'],
+            'tipo_vehiculo_id' => $data['tipo_vehiculo_id'],
+            'precio_hora' => $data['precio_hora'],
+            'precio_dia' => $data['precio_dia'],
+        ]);
 
         return redirect()->route('tarifas.index')->with('success', 'Tarifa creada correctamente.');
     }
+
 
     public function edit(Tarifa $tarifa)
     {
@@ -56,14 +71,28 @@ class TarifaController extends Controller
         $request->validate([
             'zona_id' => 'required|exists:zonas,id',
             'tipo_vehiculo_id' => 'required|exists:tipo_vehiculos,id',
-            'precio_hora' => 'nullable|numeric|min:0',
-            'precio_dia' => 'nullable|numeric|min:0',
+            'precio_hora' => 'nullable',
+            'precio_dia' => 'nullable',
         ]);
 
-        $tarifa->update($request->only(['zona_id', 'tipo_vehiculo_id', 'precio_hora', 'precio_dia']));
+        $data = $request->all();
+        $data['precio_hora'] = $data['precio_hora'] !== null
+            ? str_replace(['.', ','], ['', '.'], $data['precio_hora'])
+            : null;
+        $data['precio_dia'] = $data['precio_dia'] !== null
+            ? str_replace(['.', ','], ['', '.'], $data['precio_dia'])
+            : null;
+
+        $tarifa->update([
+            'zona_id' => $data['zona_id'],
+            'tipo_vehiculo_id' => $data['tipo_vehiculo_id'],
+            'precio_hora' => $data['precio_hora'],
+            'precio_dia' => $data['precio_dia'],
+        ]);
 
         return redirect()->route('tarifas.index')->with('success', 'Tarifa actualizada.');
     }
+
 
     public function destroy(Tarifa $tarifa)
     {
