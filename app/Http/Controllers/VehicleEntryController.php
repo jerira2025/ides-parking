@@ -6,13 +6,13 @@ use App\Models\Vehicle;
 use App\Models\VehicleEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 use App\Models\Compatibilidades;
-use App\Models\Zona; 
 use App\Models\Espacios_parqueadero;
 use App\Models\TipoVehiculo;
-use App\Models\ParkingSpace;
 
 class VehicleEntryController extends Controller
 {
@@ -23,18 +23,15 @@ class VehicleEntryController extends Controller
             ->latest('entry_time')
             ->get();
 
-        // NUEVA LÓGICA DE ESPACIOS DISPONIBLES
         $ocupados = VehicleEntry::whereNull('exit_time')->pluck('espacio_id');
         $availableSpaces = Espacios_parqueadero::whereNotIn('id', $ocupados)->count();
-
-         // Lista completa de espacios disponibles (para llenar el select)
         $espaciosDisponibles = Espacios_parqueadero::whereNotIn('id', $ocupados)->with('zona')->get();
 
         $totalSpaces = Espacios_parqueadero::count();
         $tipos = TipoVehiculo::all();
+
         return view('parking.dashboard', compact('activeEntries', 'availableSpaces', 'totalSpaces', 'tipos', 'espaciosDisponibles'));
     }
-
 
     public function registerEntry(Request $request)
     {
@@ -45,10 +42,10 @@ class VehicleEntryController extends Controller
             'model' => 'nullable|string|max:50',
             'color' => 'nullable|string|max:30'
         ]);
+
         try {
             return DB::transaction(function () use ($request) {
                 $plate = strtoupper($request->plate);
-
 
                 // Buscar o crear vehículo
                 $vehicle = Vehicle::firstOrCreate(
@@ -61,8 +58,7 @@ class VehicleEntryController extends Controller
                     ]
                 );
 
-
-                // Verificar si el vehículo ya está estacionado
+                // Verificar si ya está estacionado
                 if ($vehicle->isParked()) {
                     return response()->json([
                         'success' => false,
@@ -70,22 +66,10 @@ class VehicleEntryController extends Controller
                     ], 400);
                 }
 
-                // Buscar espacio disponible
+                // Buscar espacio compatible
                 $tipo = TipoVehiculo::find($request->tipo_vehiculo_id);
-
-                if (!$tipo) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Tipo de vehículo no reconocido'
-                    ], 400);
-                }
-
-                // Buscar zonas compatibles
                 $zonasCompatibles = Compatibilidades::where('tipo_vehiculo_id', $tipo->id)->pluck('zona_id');
-
-                // Buscar espacio disponible en zonas compatibles
                 $espaciosOcupados = VehicleEntry::whereNull('exit_time')->pluck('espacio_id');
-
 
                 $espacio = Espacios_parqueadero::whereNotIn('id', $espaciosOcupados)
                     ->whereIn('zona_id', $zonasCompatibles)
@@ -102,30 +86,37 @@ class VehicleEntryController extends Controller
                 $entry = VehicleEntry::create([
                     'vehicle_id' => $vehicle->id,
                     'espacio_id' => $espacio->id,
-                    'entry_time' => Carbon::now()
+                    'entry_time' => Carbon::now(),
+                    'ticket_code' => (string) Str::uuid(),
                 ]);
 
-                // Marcar espacio como ocupado
-                // $espacio->update(['estado' => 'ocupado']);
+                if (!$entry) {
+                    throw new \Exception("No se pudo crear el registro de entrada.");
+                }
+
+                // Generar QR
+                $qr = base64_encode(QrCode::format('png')->size(150)->generate($entry->ticket_code));
+                $ticketHtml = view('parking.ticket', ['entrada' => $entry, 'qr' => $qr])->render();
 
                 return response()->json([
-                    'success' => true,
-                    'message' => 'Entrada registrada exitosamente',
-                    'data' => [
-                        'vehicle' => $vehicle,
-                        'parking_space' => $espacio,
-                        'entry' => $entry
-                    ]
-                ]);
+    'success' => true,
+    'message' => 'Entrada registrada exitosamente',
+    'data' => [
+        'vehicle' => $vehicle,
+        'parking_space' => $espacio,
+        'entry' => $entry,
+        'ticket_html' => $ticketHtml, // Aquí mandamos el HTML del ticket
+    ]
+]);
             });
         } catch (\Exception $e) {
+            Log::error("Error al registrar entrada: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Error al registrar entrada: ' . $e->getMessage()
             ], 500);
         }
     }
-
 
     public function registerExit(Request $request)
     {
@@ -136,8 +127,6 @@ class VehicleEntryController extends Controller
         try {
             return DB::transaction(function () use ($request) {
                 $plate = strtoupper($request->plate);
-
-                // Buscar vehículo
                 $vehicle = Vehicle::where('plate', $plate)->first();
 
                 if (!$vehicle) {
@@ -147,7 +136,6 @@ class VehicleEntryController extends Controller
                     ], 404);
                 }
 
-                // Buscar entrada activa
                 $entry = $vehicle->getCurrentEntry();
 
                 if (!$entry) {
@@ -158,10 +146,7 @@ class VehicleEntryController extends Controller
                 }
 
                 $exitTime = Carbon::now();
-
-                // Registrar salida
                 $entry->update(['exit_time' => $exitTime]);
-
                 $duration = $entry->entry_time->diffInMinutes($exitTime);
 
                 return response()->json([
@@ -172,18 +157,18 @@ class VehicleEntryController extends Controller
                         'entry_time' => $entry->entry_time,
                         'exit_time' => $exitTime,
                         'duration_minutes' => $duration,
-                        'parking_space' => $entry->parkingSpace
+                        'parking_space' => $entry->espacio
                     ]
                 ]);
             });
         } catch (\Exception $e) {
+            Log::error("Error al registrar salida: " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al registrar salida: ' . $e->getMessage()
             ], 500);
         }
     }
-
 
     public function history()
     {
@@ -194,10 +179,8 @@ class VehicleEntryController extends Controller
         return view('parking.history', compact('entries'));
     }
 
-
     public function espaciosDisponibles($tipoVehiculoId)
     {
-        
         $espacios = DB::table('espacios_parqueadero')
             ->join('compatibilidades', 'espacios_parqueadero.zona_id', '=', 'compatibilidades.zona_id')
             ->join('zonas', 'espacios_parqueadero.zona_id', '=', 'zonas.id')
@@ -213,16 +196,15 @@ class VehicleEntryController extends Controller
         return response()->json($espacios);
     }
 
-   public function estadoEspacios()
-{
-    $espacios = Espacios_parqueadero::with('zona')->get();
-    return view('parking.spaces', compact('espacios'));
-}
+    public function estadoEspacios()
+    {
+        $espacios = Espacios_parqueadero::with('zona')->get();
+        return view('parking.spaces', compact('espacios'));
+    }
 
-public function invoiceHtml($id)
-{
-    $entry = VehicleEntry::with(['vehicle.tipo', 'espacio.zona'])->findOrFail($id);
-    return view('parking.invoice-html', compact('entry'));
-}
-
+    public function invoiceHtml($id)
+    {
+        $entry = VehicleEntry::with(['vehicle.tipoVehiculo', 'espacio.zona'])->findOrFail($id);
+        return view('parking.invoice-html', compact('entry'));
+    }
 }

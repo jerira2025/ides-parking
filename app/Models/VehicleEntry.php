@@ -14,7 +14,8 @@ class VehicleEntry extends Model
         'vehicle_id',
         'espacio_id',
         'entry_time',
-        'exit_time'
+        'exit_time',
+         'ticket_code',
     ];
 
     protected $casts = [

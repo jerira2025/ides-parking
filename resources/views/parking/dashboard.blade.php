@@ -217,19 +217,95 @@
 </div>
 <!-- Modal para la factura -->
 <div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Factura de Entrada</h5>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 90mm; margin:auto;">
+    <div class="modal-content" style="width: 80mm; margin: auto;">
+      <div class="modal-header p-2">
+        <h6 class="modal-title">Factura de Entrada</h6>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" id="invoiceContent">
-        <div class="text-center text-muted">Cargando factura...</div>
+
+      <div class="modal-body p-2 text-center" id="invoiceContent" style="min-width: 80mm;">
+        <div class="text-muted">Cargando factura...</div>
       </div>
     </div>
   </div>
 </div>
+
+      <!-- Pie del modal con botón para imprimir -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="printDiv('printableArea')">
+          Imprimir Recibo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor oculto para impresión -->
+<div id="printableArea" style="display:none;"></div>
+
+<script>
+function printDiv(divId) {
+  var content = document.getElementById(divId).innerHTML;
+  var myWindow = window.open('', '', 'width=800,height=600');
+  myWindow.document.write(`
+    <html>
+    <head>
+      <title>Factura</title>
+      <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+      </style>
+    </head>
+    <body>${content}</body>
+    </html>
+  `);
+  myWindow.document.close();
+  myWindow.focus();
+  myWindow.print();
+  myWindow.close();
+}
+</script>
+
+
 @endsection
+
+@section('styles')
+<style>
+  /* Área imprimible */
+  #printableArea {
+    font-family: monospace, monospace;
+    font-size: 12px;
+    width: 80mm;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* Forzar que el contenido del modal esté centrado */
+  #invoiceContent {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: fit-content;
+  }
+
+  .modal-body {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media print {
+    body {
+      text-align: center;
+    }
+    #printableArea {
+      display: block !important;
+      margin: 0 auto;
+    }
+  }
+</style>
+@endsection
+
 
 @section('scripts')
 <script>
@@ -247,19 +323,30 @@
 
             submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Procesando...');
 
-            // Enviar solicitud AJAX
             $.ajax({
-                url: '{{ route("parking.entry") }}', // Asegúrate de que esta ruta esté configurada correctamente en tu archivo de rutas
+                url: '{{ route("parking.entry") }}',
                 method: 'POST',
-                data: $(this).serialize(), // Serializa el formulario correctamente
+                data: $(this).serialize(),
                 success: function(response) {
-                    if (response.success) {
-                        showAlert('success', response.message);
-                        $('#entryForm')[0].reset();
-                        setTimeout(() => location.reload(), 1500);
-                    } else {
-                        showAlert('danger', response.message);
-                    }
+    if (response.success) {
+        showAlert('success', response.message);
+        $('#entryForm')[0].reset();
+
+        if (response.data.ticket_html) {
+            $('#invoiceContent').html(response.data.ticket_html);
+            $('#printableArea').html(response.data.ticket_html);
+
+            const modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+            modal.show();
+
+            // Recargar solo cuando el modal se cierre
+            $('#invoiceModal').one('hidden.bs.modal', function () {
+                location.reload();
+            });
+        }
+    } else {
+        showAlert('danger', response.message);
+    }
                 },
                 error: function(xhr) {
                     const response = xhr.responseJSON;
@@ -279,8 +366,6 @@
             });
         });
 
-
-        // Formulario de salida
         $('#exitForm').on('submit', function(e) {
             e.preventDefault();
 
@@ -298,7 +383,6 @@
                         showAlert('success', response.message);
                         $('#exitForm')[0].reset();
 
-                        // Mostrar información adicional
                         if (response.data && response.data.duration_minutes) {
                             const hours = Math.floor(response.data.duration_minutes / 60);
                             const minutes = response.data.duration_minutes % 60;
@@ -332,75 +416,48 @@
 
         function showAlert(type, message) {
             const alertHtml = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
 
             $('.container').prepend(alertHtml);
 
-            // Auto-dismiss after 5 seconds
             setTimeout(() => {
                 $('.alert').fadeOut();
             }, 5000);
         }
-    });
 
+        $('#type').on('change', function() {
+            const tipoVehiculoId = $(this).val();
 
-    // Escucha el cambio del tipo de vehículo para cargar espacios compatibles
-    $('#type').on('change', function() {
-        const tipoVehiculoId = $(this).val();
-
-        if (!tipoVehiculoId) {
-            $('#entry_space').html('<option value="">Seleccione un tipo de vehículo primero</option>');
-            return;
-        }
-
-        $.ajax({
-            url: '/espacios-disponibles/' + tipoVehiculoId,
-            method: 'GET',
-            success: function(data) {
-                if (data.length === 0) {
-                    $('#entry_space').html('<option value="">No hay espacios disponibles</option>');
-                    return;
-                }
-
-                let options = '<option value="">Seleccione un espacio</option>';
-                data.forEach(function(espacio) {
-                    options += `<option value="${espacio.id}">Zona ${espacio.zona} - Espacio ${espacio.numero}</option>`;
-                });
-
-                $('#entry_space').html(options);
-            },
-            error: function() {
-                $('#entry_space').html('<option value="">Error al cargar espacios</option>');
+            if (!tipoVehiculoId) {
+                $('#entry_space').html('<option value="">Seleccione un tipo de vehículo primero</option>');
+                return;
             }
+
+            $.ajax({
+                url: '/espacios-disponibles/' + tipoVehiculoId,
+                method: 'GET',
+                success: function(data) {
+                    if (data.length === 0) {
+                        $('#entry_space').html('<option value="">No hay espacios disponibles</option>');
+                        return;
+                    }
+
+                    let options = '<option value="">Seleccione un espacio</option>';
+                    data.forEach(function(espacio) {
+                        options += `<option value="${espacio.id}">Zona ${espacio.zona} - Espacio ${espacio.numero}</option>`;
+                    });
+
+                    $('#entry_space').html(options);
+                },
+                error: function() {
+                    $('#entry_space').html('<option value="">Error al cargar espacios</option>');
+                }
+            });
         });
     });
-    // Botón para imprimir factura en modal
-$(document).on('click', '.btn-imprimir', function () {
-    const entryId = $(this).data('entry-id');
-    const modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
-    const $content = $('#invoiceContent');
-
-    $content.html('<div class="text-center text-muted">Cargando factura...</div>');
-
-    $.ajax({
-        url: '/factura-html/' + entryId, // Ruta que devuelve la factura HTML (no PDF)
-        method: 'GET',
-        success: function (html) {
-            $content.html(html);
-            modal.show();
-
-            $('#invoiceModal').on('shown.bs.modal', function () {
-                window.print();
-            });
-        },
-        error: function () {
-            $content.html('<div class="alert alert-danger">Error al cargar la factura.</div>');
-        }
-    });
-});
 </script>
 @endsection
